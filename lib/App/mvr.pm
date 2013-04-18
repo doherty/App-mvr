@@ -10,6 +10,7 @@ our @EXPORT_OK = qw(mvr);
 
 use Path::Tiny;
 use Try::Tiny;
+use Carp;
 
 our $VERBOSE = 0;
 
@@ -44,22 +45,21 @@ This function is not exported by default.
 
 sub mvr {
     my %args = @_;
+    $args{dest}   //= delete $args{destination};
     $args{source} = [delete $args{source}] unless ref $args{source} eq 'ARRAY';
+
     my $dest = path( $args{dest} );
     my $dest_is_dir = $dest->exists && $dest->is_dir;
-    die "Target $dest is not a directory\n"
+    croak "target `$dest' is not a directory\n"
         if @{ $args{source} } > 1 and !$dest_is_dir;
 
     foreach my $from ( map { path($_) } @{ $args{source} } ) {
         unless ($from->exists) {
-            warn "$from doesn't exist\n";
+            carp "cannot stat `$from': No such file or directory\n";
             next;
         }
         my $to = path( $dest, ($dest_is_dir ? $from->basename : ()) );
-        if ($from->absolute eq $to->absolute) {
-            warn "$to and $from are the same file\n";
-            next;
-        }
+        croak "`$to' and `$from' are the same file\n" if $from->absolute eq $to->absolute;
 
         if ($to->exists) {
             my ($prefix, $suffix) = $to->basename =~ m{^(.*)\.(\w+)$};
@@ -70,7 +70,7 @@ sub mvr {
                 DIR => $dest_is_dir ? $dest : $dest->dirname,
                 ( $suffix ? (SUFFIX => ".$suffix") : () ),
             );
-            warn "File already exists; renaming $from to $to\n" if $VERBOSE;
+            warn "File already exists; renaming `$from' to `$to'\n" if $VERBOSE;
         }
 
         try {
@@ -81,10 +81,11 @@ sub mvr {
 
             use POSIX qw(:errno_h);
             if ($_->errno == EXDEV) { # Invalid cross-device link
-                print STDERR "File can't be renamed across filesystems; copying $from to $to instead..."
+                STDERR->autoflush(1);
+                print STDERR "File can't be renamed across filesystems; copying `$from' to `$to' instead..."
                     if $VERBOSE;
                 $from->copy($to);
-                print STDERR " done. Removing original file\n" if $VERBOSE;
+                print STDERR " done. Removing original file.\n" if $VERBOSE;
                 $from->remove;
             }
             else {

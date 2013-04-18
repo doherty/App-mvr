@@ -23,6 +23,7 @@ my %module_build_args = (
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
+    "Carp" => 0,
     "Exporter" => 0,
     "Getopt::Long" => 0,
     "POSIX" => 0,

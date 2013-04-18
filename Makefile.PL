@@ -24,6 +24,7 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "App::mvr",
   "PREREQ_PM" => {
+    "Carp" => 0,
     "Exporter" => 0,
     "Getopt::Long" => 0,
     "POSIX" => 0,
