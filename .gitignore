@@ -1,2 +1,6 @@
 App-mvr-*
 .build
+_build
+Build
+MYMETA.*
+
