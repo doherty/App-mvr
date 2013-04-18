@@ -61,8 +61,8 @@ subtest verbose => sub {
         [path($wd, 'verbose'), path($wd, 'd', 'verbose') ],
         \my $out, \my $err
     );
-    is $out => '';
-    like $err => qr{\QFile already exists};
+    is $out => '', 'no stdout';
+    like $err => qr{\QFile already exists}, 'name conflict detected';
 };
 
 subtest quiet => sub {

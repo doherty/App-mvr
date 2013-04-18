@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 2;
+use Test::Fatal;
 use Path::Tiny;
 use App::mvr qw( mvr );
 
@@ -8,7 +9,6 @@ my $wd = path( 'corpus', path(__FILE__)->basename );
 END { path($wd)->remove_tree }
 
 subtest 'same file' => sub {
-    use Test::Fatal;
     plan tests => 1;
 
     path($wd)->remove_tree;
@@ -20,7 +20,6 @@ subtest 'same file' => sub {
 };
 
 subtest 'not a dir' => sub {
-    use Test::Fatal;
     plan tests => 1;
 
     path($wd)->remove_tree;

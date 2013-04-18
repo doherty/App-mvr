@@ -1,14 +1,15 @@
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 4;
+use Capture::Tiny qw(capture);
+use Test::Fatal qw(lives_ok);
 use Path::Tiny;
-use App::mvr qw( mvr );
+use App::mvr qw(mvr);
 
 my $wd = path( 'corpus', path(__FILE__)->basename );
 END { path($wd)->remove_tree }
 
 subtest main => sub {
-    use Test::Fatal qw( lives_ok );
     plan tests => 6;
 
     path($wd)->remove_tree;
@@ -35,7 +36,6 @@ subtest main => sub {
 };
 
 subtest verbosity => sub {
-    use Capture::Tiny qw(capture);
     plan tests => 4;
 
     path($wd)->remove_tree;
