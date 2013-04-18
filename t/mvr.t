@@ -62,7 +62,58 @@ subtest verbosity => sub {
                 dest =>path($wd, 'd', 'quiet' )
             );
         };
-        is $out => '';
-        is $err => '';
+        is $out => '', 'no stdout';
+        is $err => '', 'no stderr';
     }
+};
+
+subtest dupes => sub {
+    plan tests => 5;
+
+    path($wd)->remove_tree;
+    for (qw/ 1 2 /) {
+        path($wd, $_)->touchpath;
+        path($wd, $_)->spew(qw/test/);
+    }
+
+    my ($out, $err) = capture {
+        local $App::mvr::VERBOSE = 1;
+        mvr(
+            deduplicate => 1,
+            source => path($wd, 1),
+            dest => path($wd, 2),
+        );
+    };
+    is $out => '', 'no stdout';
+    like $err => qr{\QFile already exists}, 'name conflict detected';
+    like $err => qr{\Qchecking for duplication}, 'checking for duplication';
+    like $err => qr{\Qare duplicates}, 'files correctly detected to be duplicates';
+    is_deeply [path($wd)->children], [path($wd, 2)], 'only one file is left';
+};
+
+subtest 'no dupes' => sub {
+    plan tests => 7;
+
+    path($wd)->remove_tree;
+    for (qw/ 1 2 /) {
+        path($wd, $_)->touchpath;
+        path($wd, $_)->spew(qw/test/, $_);
+    }
+
+    my ($out, $err) = capture {
+        local $App::mvr::VERBOSE = 1;
+        mvr(
+            deduplicate => 1,
+            source => path($wd, 1),
+            dest => path($wd, 2),
+        );
+    };
+    is $out => '', 'no stdout';
+    like $err => qr{\QFile already exists}, 'name conflict detected';
+    like $err => qr{\Qchecking for duplication}, 'checking for duplication';
+    like $err => qr{\Qare not duplicates}, 'files correctly detected to be different';
+
+    my @children = map { $_->basename } path($wd)->children;
+    is @children, 2, 'file was actually moved' or diag explain \@children;
+    like $_ => qr{^2(?:-.{6})?$}, 'filenames look right' for @children;
 };

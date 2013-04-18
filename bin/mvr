@@ -31,6 +31,14 @@ being the word "mover" with the vowels removed for Maximum Trendiness.
 
 =over 4
 
+=item B<--deduplicate>, --no-deduplicate
+
+Whether to enable deduplication. If enabled (the default), then upon
+encountering a name conflict, the script will check whether the source and
+destination files have the same contents. If they do, the source file will
+simply be removed, rather than adding another copy of the file to the
+destination. Use C<--no-deduplicate> to disable this behaviour.
+
 =item B<--verbose>
 
 Provides additional output.
@@ -48,12 +56,13 @@ Show version information
 =cut
 
 my $verbose = 1;
-my %opts = ( quiet => sub { $verbose = 0 }, verbose => \$verbose );
+my %opts = ( quiet => sub { $verbose = 0 }, verbose => \$verbose, deduplicate => 1 );
 GetOptions( \%opts,
     'help|?',
     'version',
     'verbose!',
-    'quiet!'
+    'quiet!',
+    'deduplicate!',
 ) or pod2usage( -verbose => 1 );
 pod2usage( -verbose => 2 ) if $opts{help};
 
@@ -65,4 +74,4 @@ pod2usage( -verbose => 0, -exitval => 1) unless @ARGV;
 my $dest = shift;
 
 local $App::mvr::VERBOSE = $verbose;
-mvr( source => \@source, dest => $dest );
+mvr( source => \@source, dest => $dest, deduplicate => $opts{deduplicate} );

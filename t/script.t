@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 use Test::Script::Run;
 use Path::Tiny;
 
@@ -13,7 +13,7 @@ subtest plain => sub {
     path($wd)->remove_tree;
     path($wd, "$_.txt")->touchpath for qw( one two three d/three );
 
-    run_ok( 'mvr', [path($wd, "$_.txt"), path($wd, 'd') ], 'renames OK' )
+    run_ok( 'mvr', ['--no-deduplicate', path($wd, "$_.txt"), path($wd, 'd') ], 'renames OK' )
         for (qw/ one two three /);
 
     ok path($wd, 'd', "$_.txt")->exists, "d/$_.txt exists"
@@ -35,7 +35,7 @@ subtest 'file ext' => sub {
     path($wd)->remove_tree;
     path($wd, $_)->touchpath for qw( one two three d/three );
 
-    run_ok( 'mvr', [path($wd, $_), path($wd, 'd') ], 'renames OK' )
+    run_ok( 'mvr', ['--no-deduplicate', path($wd, $_), path($wd, 'd') ], 'renames OK' )
         for (qw/ one two three /);
 
     ok path($wd, 'd', $_)->exists, "d/$_ exists"
@@ -58,7 +58,7 @@ subtest verbose => sub {
     path($wd, $_)->touchpath for qw( verbose d/verbose );
 
     run_script( 'mvr',
-        [path($wd, 'verbose'), path($wd, 'd', 'verbose') ],
+        ['--no-deduplicate', path($wd, 'verbose'), path($wd, 'd', 'verbose') ],
         \my $out, \my $err
     );
     is $out => '', 'no stdout';
@@ -72,9 +72,52 @@ subtest quiet => sub {
     path($wd, $_)->touchpath for qw( quiet d/quiet );
 
     run_script( 'mvr',
-        ['--quiet', path($wd, 'quiet'), path($wd, 'd')],
+        ['--no-deduplicate', '--quiet', path($wd, 'quiet'), path($wd, 'd')],
         \my $out, \my $err
     );
-    is $out => '';
-    is $err => '';
+    is $out => '', 'no stdout';
+    is $err => '', 'non stderr';
+};
+
+subtest dupes => sub {
+    plan tests => 5;
+
+    path($wd)->remove_tree;
+    for (qw/ 1 2 /) {
+        path($wd, $_)->touchpath;
+        path($wd, $_)->spew(qw/test/);
+    }
+
+    run_script( 'mvr',
+        [ path($wd, 1), path($wd, 2) ],
+        \my $out, \my $err
+    );
+    is $out => '', 'no stdout';
+    like $err => qr{\QFile already exists}, 'name conflict detected';
+    like $err => qr{\Qchecking for duplication}, 'checking for duplication';
+    like $err => qr{\Qare duplicates}, 'files correctly detected to be duplicates';
+    is_deeply [path($wd)->children], [path($wd, 2)], 'only one file is left';
+};
+
+subtest 'no dupes' => sub {
+    plan tests => 7;
+
+    path($wd)->remove_tree;
+    for (qw/ 1 2 /) {
+        path($wd, $_)->touchpath;
+        path($wd, $_)->spew(qw/test/, $_);
+    }
+
+    run_script( 'mvr',
+        ['--deduplicate', path($wd, 1), path($wd, 2) ],
+        \my $out, \my $err
+    );
+    is $out => '', 'no stdout';
+    like $err => qr{\QFile already exists}, 'name conflict detected';
+    like $err => qr{\Qchecking for duplication}, 'checking for duplication';
+    like $err => qr{\Qare not duplicates}, 'files correctly detected to be different';
+
+    my @children = map { $_->basename } path($wd)->children;
+    is @children, 2, 'file was actually moved' or diag explain \@children;
+    like $_ => qr{^2(?:-.{6})?$}, 'filenames look right' for @children;
 };

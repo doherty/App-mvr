@@ -37,11 +37,31 @@ An arrayref of source files, or a single scalar if you have only one file.
 The target pathname. If this is a directory, file(s) will be moved into it - or
 an exception will be raised if the directory doesn't exist.
 
+=item deduplicate
+
+Check if files are the same whenever there is a name conflict. If they are the
+same, then just remove the source file instead of adding another copy to the
+destination.
+
 =back
 
 This function is not exported by default.
 
 =cut
+
+my $duplicates = sub {
+    my $A = shift;
+    my $B = shift;
+    return if $A->stat->size != $B->stat->size; # avoid reading file off disk
+
+    # Pull out the big guns
+    require Digest::MD5;
+    return
+        Digest::MD5->new->addfile( $A->filehandle('<', ':raw') )->digest
+        eq
+        Digest::MD5->new->addfile( $B->filehandle('<', ':raw') )->digest
+    ;
+};
 
 sub mvr {
     my %args = @_;
@@ -62,8 +82,20 @@ sub mvr {
         croak "`$to' and `$from' are the same file\n" if $from->absolute eq $to->absolute;
 
         if ($to->exists) {
-            my ($prefix, $suffix) = $to->basename =~ m{^(.*)\.(\w+)$};
+            if ($args{deduplicate}) {
+                STDERR->autoflush(1);
+                print STDERR "File already exists; checking for duplication..." if $VERBOSE;
+                if ($duplicates->($from, $to)) {
+                    print STDERR " `$from' and `$to' are duplicates; removing the source file.\n" if $VERBOSE;
+                    $from->remove;
+                    next;
+                }
+                else {
+                    print STDERR " `$from' and `$to' are not duplicates.\n" if $VERBOSE;
+                }
+            }
 
+            my ($prefix, $suffix) = $to->basename =~ m{^(.*)\.(\w+)$};
             $to = Path::Tiny->tempfile(
                 UNLINK => 0,
                 TEMPLATE => ($prefix // $to->basename) . '-XXXXXX',
