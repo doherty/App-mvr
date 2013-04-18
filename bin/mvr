@@ -8,7 +8,7 @@ use warnings;
 
 use Pod::Usage qw(pod2usage);
 use Getopt::Long;
-use App::mvr qw(mvr);
+use App::mvr;
 
 =head1 SYNOPSIS
 

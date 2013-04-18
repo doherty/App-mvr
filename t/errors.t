@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 2;
 use Test::Fatal;
 use Path::Tiny;
-use App::mvr qw( mvr );
+use App::mvr;
 
 my $wd = path( 'corpus', path(__FILE__)->basename );
 END { path($wd)->remove_tree }

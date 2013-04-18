@@ -6,7 +6,7 @@ use warnings;
 # VERSION
 
 use Exporter qw(import);
-our @EXPORT_OK = qw(mvr);
+our @EXPORT = qw(mvr);
 
 use Path::Tiny;
 use Try::Tiny;
