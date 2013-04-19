@@ -13,8 +13,8 @@ use App::mvr;
 =head1 SYNOPSIS
 
     mv source.txt dest.txt
-    mv source{1,2,3}.txt dest/  # don't care if source1.txt already exists
-    mv DSC*.jpg ~/Pictures      # don't care if DSC0001.jpg already exists
+    mv source{1,2,3}.txt dest # don't care if source1.txt already exists
+    mv DSC*.jpg ~/Pictures    # don't care if DSC0001.jpg already exists
 
 =head1 DESCRIPTION
 

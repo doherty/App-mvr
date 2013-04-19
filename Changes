@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+  - Better abstracts
+  - Fit synopsis in an 80-col terminal
 
 0.001     2013-04-18
- -
+  - Initial release
