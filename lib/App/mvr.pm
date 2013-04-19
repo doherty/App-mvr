@@ -2,7 +2,7 @@ package App::mvr;
 use v5.14.0;
 use strict;
 use warnings;
-# ABSTRACT: move
+# ABSTRACT: like mv, but clever
 # VERSION
 
 use Exporter qw(import);

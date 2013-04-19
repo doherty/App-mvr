@@ -4,7 +4,7 @@ use strict;
 use warnings;
 # VERSION
 # PODNAME: mvr
-# ABSTRACT: move-rename/mover
+# ABSTRACT: like mv, but clever
 
 use Pod::Usage qw(pod2usage);
 use Getopt::Long;
