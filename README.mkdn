@@ -1,10 +1,10 @@
 # NAME
 
-App::mvr - move
+App::mvr - like mv, but clever
 
 # VERSION
 
-version 0.001
+version 0.002
 
 # FUNCTIONS
 
@@ -36,6 +36,8 @@ Parameters are key-value pairs:
 This function is not exported by default.
 
 # AVAILABILITY
+
+The project homepage is [http://metacpan.org/release/App-mvr/](http://metacpan.org/release/App-mvr/).
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit [http://www.perl.com/CPAN/](http://www.perl.com/CPAN/) to find a CPAN

@@ -12,12 +12,12 @@ my %module_build_args = (
   "configure_requires" => {
     "Module::Build" => "0.3601"
   },
-  "dist_abstract" => "move",
+  "dist_abstract" => "like mv, but clever",
   "dist_author" => [
     "Mike Doherty <doherty\@cpan.org>"
   ],
   "dist_name" => "App-mvr",
-  "dist_version" => "0.001",
+  "dist_version" => "0.002",
   "license" => "perl",
   "module_name" => "App::mvr",
   "recommends" => {},

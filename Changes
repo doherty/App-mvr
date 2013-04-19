@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+
+0.002     2013-04-19
   - Better abstracts
   - Fit synopsis in an 80-col terminal
 

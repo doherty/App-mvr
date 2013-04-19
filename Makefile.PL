@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "move",
+  "ABSTRACT" => "like mv, but clever",
   "AUTHOR" => "Mike Doherty <doherty\@cpan.org>",
   "BUILD_REQUIRES" => {
     "Module::Build" => "0.3601"
@@ -43,7 +43,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::Script::Run" => 0
   },
-  "VERSION" => "0.001",
+  "VERSION" => "0.002",
   "test" => {
     "TESTS" => "t/*.t"
   }
