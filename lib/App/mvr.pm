@@ -79,7 +79,8 @@ sub mvr {
         catch {
             die $_ unless $_->isa('autodie::exception');
 
-            if ($_->errno == 18) { # Invalid cross-device link
+            use POSIX qw(:errno_h);
+            if ($_->errno == EXDEV) { # Invalid cross-device link
                 print STDERR "File can't be renamed across filesystems; copying $from to $to instead..."
                     if $VERBOSE;
                 $from->copy($to);
