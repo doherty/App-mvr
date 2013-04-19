@@ -23,6 +23,11 @@ FUNCTIONS
         into it - or an exception will be raised if the directory doesn't
         exist.
 
+    deduplicate
+        Check if files are the same whenever there is a name conflict. If
+        they are the same, then just remove the source file instead of
+        adding another copy to the destination.
+
     This function is not exported by default.
 
 AVAILABILITY
@@ -37,7 +42,7 @@ SOURCE
 
 BUGS AND LIMITATIONS
     You can make new bug reports, and view existing ones, through the web
-    interface at <http://rt.cpan.org>.
+    interface at <https://github.com/doherty/App-mvr/issues>.
 
 AUTHOR
     Mike Doherty <doherty@cpan.org>

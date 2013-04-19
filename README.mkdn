@@ -27,6 +27,12 @@ Parameters are key-value pairs:
     The target pathname. If this is a directory, file(s) will be moved into it - or
     an exception will be raised if the directory doesn't exist.
 
+- deduplicate
+
+    Check if files are the same whenever there is a name conflict. If they are the
+    same, then just remove the source file instead of adding another copy to the
+    destination.
+
 This function is not exported by default.
 
 # AVAILABILITY
@@ -43,7 +49,7 @@ and may be cloned from [git://github.com/doherty/App-mvr.git](git://github.com/d
 # BUGS AND LIMITATIONS
 
 You can make new bug reports, and view existing ones, through the
-web interface at [http://rt.cpan.org](http://rt.cpan.org).
+web interface at [https://github.com/doherty/App-mvr/issues](https://github.com/doherty/App-mvr/issues).
 
 # AUTHOR
 
