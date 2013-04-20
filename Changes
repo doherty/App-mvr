@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+
+0.003     2013-04-19
   - Actually implement the --version option
 
 0.002     2013-04-19
