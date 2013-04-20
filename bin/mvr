@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+package
+    mvr;
 use v5.14.0;
 use strict;
 use warnings;
@@ -45,11 +47,11 @@ Provides additional output.
 
 =item B<--help>, -?
 
-Show this documentation
+Show this documentation.
 
 =item B<--version>
 
-Show version information
+Show version information.
 
 =back
 
@@ -65,6 +67,11 @@ GetOptions( \%opts,
     'deduplicate!',
 ) or pod2usage( -verbose => 1 );
 pod2usage( -verbose => 2 ) if $opts{help};
+
+if ($opts{version}) {
+    say __PACKAGE__ . ' version ' . (__PACKAGE__->VERSION // 'dev');
+    exit;
+}
 
 my @source;
 push @source, shift

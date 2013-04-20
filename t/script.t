@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Script::Run;
 use Path::Tiny;
 
@@ -120,4 +120,13 @@ subtest 'no dupes' => sub {
     my @children = map { $_->basename } path($wd)->children;
     is @children, 2, 'file was actually moved' or diag explain \@children;
     like $_ => qr{^2(?:-.{6})?$}, 'filenames look right' for @children;
+};
+
+subtest version => sub {
+    plan tests => 3;
+
+    run_script( mvr => [qw/ --version /], \my $out, \my $err );
+    is $? >> 8, 0, 'zero exit code';
+    like $out => qr{^mvr version}, 'version reported OK';
+    is $err => '', 'no stderr when reporting version';
 };
