@@ -32,7 +32,6 @@ subtest main => sub {
     is scalar @files => 1;
     like $files[0] => qr{three\Q.jpg.tar.gz\E-.{6}\.txt$};
     note "found $files[0]";
-    note `ls -lR corpus`;
 };
 
 subtest verbosity => sub {

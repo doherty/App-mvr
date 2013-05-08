@@ -26,7 +26,6 @@ subtest plain => sub {
     is scalar @files => 1;
     like $files[0] => qr{three-.{6}\.txt$} or diag $files[0];
     note "found $files[0]";
-    note `ls -lR corpus`;
 };
 
 subtest 'file ext' => sub {
@@ -48,7 +47,6 @@ subtest 'file ext' => sub {
     is scalar @files => 1;
     like $files[0] => qr{three-.{6}};
     note "found $files[0]";
-    note `ls -lR corpus`;
 };
 
 subtest verbose => sub {
