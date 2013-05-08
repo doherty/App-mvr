@@ -70,28 +70,35 @@ sub mvr {
 
     my $dest = path( $args{dest} );
     my $dest_is_dir = $dest->exists && $dest->is_dir;
-    croak "target `$dest' is not a directory\n"
+    croak sprintf("target `%s' is not a directory\n", $dest)
         if @{ $args{source} } > 1 and !$dest_is_dir;
 
     foreach my $from ( map { path($_) } @{ $args{source} } ) {
         unless ($from->exists) {
-            carp "cannot stat `$from': No such file or directory\n";
+            carp sprintf("Cannot stat `%s': No such file or directory\n", $from);
             next;
         }
         my $to = path( $dest, ($dest_is_dir ? $from->basename : ()) );
-        croak "`$to' and `$from' are the same file\n" if $from->absolute eq $to->absolute;
+        croak sprintf("`%s' and `%s' are the same file\n", $to, $from)
+            if $from->absolute eq $to->absolute;
 
         if ($to->exists) {
             if ($args{deduplicate}) {
                 STDERR->autoflush(1);
                 print STDERR "File already exists; checking for duplication..." if $VERBOSE;
                 if ($duplicates->($from, $to)) {
-                    print STDERR " `$from' and `$to' are duplicates; removing the source file.\n" if $VERBOSE;
+                    printf STDERR
+                        " `' and `%s' are duplicates; removing the source file.\n",
+                        $from->basename, $to->basename
+                        if $VERBOSE;
                     $from->remove;
                     next;
                 }
                 else {
-                    print STDERR " `$from' and `$to' are not duplicates.\n" if $VERBOSE;
+                    printf STDERR
+                        " `%s' and `%s' are not duplicates.\n",
+                        $from->basename, $to->basename
+                        if $VERBOSE;
                 }
             }
 
@@ -102,7 +109,9 @@ sub mvr {
                 DIR => $dest_is_dir ? $dest : $dest->dirname,
                 ( $suffix ? (SUFFIX => ".$suffix") : () ),
             );
-            warn "File already exists; renaming `$from' to `$to'\n" if $VERBOSE;
+            printf STDERR "File already exists; renaming `%s' to `%s'\n",
+                $from->basename, $to->basename
+                if $VERBOSE;
         }
 
         try {
@@ -114,7 +123,8 @@ sub mvr {
             use POSIX qw(:errno_h);
             if ($_->errno == EXDEV) { # Invalid cross-device link
                 STDERR->autoflush(1);
-                print STDERR "File can't be renamed across filesystems; copying `$from' to `$to' instead..."
+                printf STDERR "File can't be renamed across filesystems; copying `%s' to `%s' instead...",
+                    $from->basename, $to->basename
                     if $VERBOSE;
                 $from->copy($to);
                 print STDERR " done. Removing original file.\n" if $VERBOSE;
