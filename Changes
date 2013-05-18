@@ -1,6 +1,7 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+  - Touch the destination when the files are duplicates
 
 0.003     2013-04-19
   - Actually implement the --version option

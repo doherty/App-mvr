@@ -92,6 +92,7 @@ sub mvr {
                         $from->basename, $to->basename
                         if $VERBOSE;
                     $from->remove;
+                    $to->touch;
                     next;
                 }
                 else {
