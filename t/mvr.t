@@ -87,7 +87,9 @@ subtest dupes => sub {
     like $err => qr{\QFile already exists}, 'name conflict detected';
     like $err => qr{\Qchecking for duplication}, 'checking for duplication';
     like $err => qr{\Qare duplicates}, 'files correctly detected to be duplicates';
-    is_deeply [path($wd)->children], [path($wd, 2)], 'only one file is left';
+    my @remaining_files = map { $_->basename } path($wd)->children;
+    is_deeply \@remaining_files, [qw( 2 )], 'only one file is left'
+        or diag explain \@remaining_files;
 };
 
 subtest 'no dupes' => sub {
