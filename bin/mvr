@@ -41,9 +41,10 @@ destination files have the same contents. If they do, the source file will
 simply be removed, rather than adding another copy of the file to the
 destination. Use C<--no-deduplicate> to disable this behaviour.
 
-=item B<--verbose>
+=item B<--verbose>, <--quiet>
 
-Provides additional output.
+Provides output describing operations. Use C<--quiet> to silence all
+non-error output.
 
 =item B<--help>, -?
 

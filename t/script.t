@@ -86,7 +86,9 @@ subtest dupes => sub {
         path($wd, $_)->spew(qw/test/);
     }
 
-    run_script( 'mvr',
+        local $App::mvr::VERBOSE = 1;
+
+    run_script( mvr =>
         [ path($wd, 1), path($wd, 2) ],
         \my $out, \my $err
     );
