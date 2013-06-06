@@ -88,7 +88,7 @@ sub mvr {
                 print STDERR "File already exists; checking for duplication..." if $VERBOSE;
                 if ($duplicates->($from, $to)) {
                     printf STDERR
-                        " `' and `%s' are duplicates; removing the source file.\n",
+                        " `%s' and `%s' are duplicates; removing the source file.\n",
                         $from->basename, $to->basename
                         if $VERBOSE;
                     $from->remove;
