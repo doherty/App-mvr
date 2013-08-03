@@ -86,17 +86,19 @@ subtest dupes => sub {
         path($wd, $_)->spew(qw/test/);
     }
 
+    {
+        no warnings qw/once/;
         local $App::mvr::VERBOSE = 1;
-
-    run_script( mvr =>
-        [ path($wd, 1), path($wd, 2) ],
-        \my $out, \my $err
-    );
-    is $out => '', 'no stdout';
-    like $err => qr{\QFile already exists}, 'name conflict detected';
-    like $err => qr{\Qchecking for duplication}, 'checking for duplication';
-    like $err => qr{\Qare duplicates}, 'files correctly detected to be duplicates';
-    is_deeply [path($wd)->children], [path($wd, 2)], 'only one file is left';
+        run_script( mvr =>
+            [ path($wd, 1), path($wd, 2) ],
+            \my $out, \my $err
+        );
+        is $out => '', 'no stdout';
+        like $err => qr{\QFile already exists}, 'name conflict detected';
+        like $err => qr{\Qchecking for duplication}, 'checking for duplication';
+        like $err => qr{\Qare duplicates}, 'files correctly detected to be duplicates';
+        is_deeply [path($wd)->children], [path($wd, 2)], 'only one file is left';
+    }
 };
 
 subtest 'no dupes' => sub {
