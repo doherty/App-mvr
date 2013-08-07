@@ -128,6 +128,7 @@ sub mvr {
                     $from->basename, $to->basename
                     if $VERBOSE;
                 $from->copy($to);
+                $to->touch( $from->stat->mtime );
                 print STDERR " done. Removing original file.\n" if $VERBOSE;
                 $from->remove;
             }
