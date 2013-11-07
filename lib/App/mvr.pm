@@ -73,7 +73,10 @@ sub mvr {
     croak sprintf("target `%s' is not a directory\n", $dest)
         if @{ $args{source} } > 1 and !$dest_is_dir;
 
+    STDOUT->autoflush(1) if $VERBOSE;
     foreach my $from ( map { path($_) } @{ $args{source} } ) {
+        print "\r${from}\e[K" if $VERBOSE == 1;
+
         unless ($from->exists) {
             carp sprintf("Cannot stat `%s': No such file or directory\n", $from);
             next;
@@ -84,13 +87,13 @@ sub mvr {
 
         if ($to->exists) {
             if ($args{deduplicate}) {
-                STDERR->autoflush(1);
-                print STDERR "File already exists; checking for duplication..." if $VERBOSE;
+                print STDERR "File already exists; checking for duplication..."
+                    if $VERBOSE > 1;
                 if ($duplicates->($from, $to)) {
                     printf STDERR
                         " `%s' and `%s' are duplicates; removing the source file.\n",
                         $from->basename, $to->basename
-                        if $VERBOSE;
+                        if $VERBOSE > 1;
                     $from->remove;
                     $to->touch;
                     next;
@@ -99,7 +102,7 @@ sub mvr {
                     printf STDERR
                         " `%s' and `%s' are not duplicates.\n",
                         $from->basename, $to->basename
-                        if $VERBOSE;
+                        if $VERBOSE > 1;
                 }
             }
 
@@ -112,7 +115,7 @@ sub mvr {
             );
             printf STDERR "File already exists; renaming `%s' to `%s'\n",
                 $from->basename, $to->basename
-                if $VERBOSE;
+                if $VERBOSE > 1;
         }
 
         try {
@@ -123,13 +126,12 @@ sub mvr {
 
             use POSIX qw(:errno_h);
             if ($_->errno == EXDEV) { # Invalid cross-device link
-                STDERR->autoflush(1);
                 printf STDERR "File can't be renamed across filesystems; copying `%s' to `%s' instead...",
                     $from->basename, $to->basename
-                    if $VERBOSE;
+                    if $VERBOSE > 1;
                 $from->copy($to);
                 $to->touch( $from->stat->mtime );
-                print STDERR " done. Removing original file.\n" if $VERBOSE;
+                print STDERR " done. Removing original file.\n" if $VERBOSE > 1;
                 $from->remove;
             }
             else {

@@ -56,7 +56,7 @@ subtest verbose => sub {
     path($wd, $_)->touchpath for qw( verbose d/verbose );
 
     run_script( 'mvr',
-        ['--no-deduplicate', path($wd, 'verbose'), path($wd, 'd', 'verbose') ],
+        ['--no-deduplicate', '-v', path($wd, 'verbose'), path($wd, 'd', 'verbose') ],
         \my $out, \my $err
     );
     is $out => '', 'no stdout';
@@ -87,10 +87,8 @@ subtest dupes => sub {
     }
 
     {
-        no warnings qw/once/;
-        local $App::mvr::VERBOSE = 1;
         run_script( mvr =>
-            [ path($wd, 1), path($wd, 2) ],
+            [ '-v', path($wd, 1), path($wd, 2) ],
             \my $out, \my $err
         );
         is $out => '', 'no stdout';
@@ -111,7 +109,7 @@ subtest 'no dupes' => sub {
     }
 
     run_script( 'mvr',
-        ['--deduplicate', path($wd, 1), path($wd, 2) ],
+        ['--deduplicate', '-v', path($wd, 1), path($wd, 2) ],
         \my $out, \my $err
     );
     is $out => '', 'no stdout';

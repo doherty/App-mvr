@@ -23,7 +23,7 @@ END { $cleanup->() }
 sleep 1;
 
 my ($out, $err) = capture {
-    local $App::mvr::VERBOSE = 1;
+    local $App::mvr::VERBOSE = 2;
     mvr(source => $orig_file, dest => $dir);
 };
 is   $out => '';

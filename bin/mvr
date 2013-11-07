@@ -63,7 +63,7 @@ my %opts = ( quiet => sub { $verbose = 0 }, verbose => \$verbose, deduplicate =>
 GetOptions( \%opts,
     'help|?',
     'version',
-    'verbose!',
+    'verbose|v+',
     'quiet!',
     'deduplicate!',
 ) or pod2usage( -verbose => 1 );
