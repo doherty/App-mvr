@@ -2,7 +2,7 @@ NAME
     App::mvr - like mv, but clever
 
 VERSION
-    version 0.004
+    version 0.005
 
 FUNCTIONS
   mvr

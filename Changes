@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+
+0.005     2013-11-12
   - Be less verbose by default
   - Handle Path::Tiny 0.034's new exception class
 
