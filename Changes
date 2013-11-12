@@ -2,6 +2,7 @@ Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
   - Be less verbose by default
+  - Handle Path::Tiny 0.034's new exception class
 
 0.004     2013-05-17
   - Touch the destination when the files are duplicates

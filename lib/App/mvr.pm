@@ -8,7 +8,7 @@ use warnings;
 use Exporter qw(import);
 our @EXPORT = qw(mvr);
 
-use Path::Tiny;
+use Path::Tiny 0.034;
 use Try::Tiny;
 use Carp;
 
@@ -55,12 +55,7 @@ my $duplicates = sub {
     return if $A->stat->size != $B->stat->size; # avoid reading file off disk
 
     # Pull out the big guns
-    require Digest::MD5;
-    return
-        Digest::MD5->new->addfile( $A->filehandle('<', ':raw') )->digest
-        eq
-        Digest::MD5->new->addfile( $B->filehandle('<', ':raw') )->digest
-    ;
+    return $A->digest eq $B->digest;
 };
 
 sub mvr {
@@ -122,10 +117,8 @@ sub mvr {
             $from->move($to);
         }
         catch {
-            die $_ unless $_->isa('autodie::exception');
-
             use POSIX qw(:errno_h);
-            if ($_->errno == EXDEV) { # Invalid cross-device link
+            if ($_->{err} == EXDEV) { # Invalid cross-device link
                 printf STDERR "File can't be renamed across filesystems; copying `%s' to `%s' instead...",
                     $from->basename, $to->basename
                     if $VERBOSE > 1;
